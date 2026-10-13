@@ -99,6 +99,12 @@ Resultados observados:
 - Mensagem "Hello, World!" exibida.
 - Comunicação entre frontend e backend confirmada.
 
-A validação de uma instalação limpa será realizada
-em uma nova pasta, seguindo estas instruções.
+A instalação limpa foi realizada e validada com sucesso.
 
+O repositório foi clonado em uma nova pasta chamada `teste-instalacao`, seguindo os comandos documentados no README.
+
+Foi executado o comando `docker compose up --build -d`, que construiu e iniciou os contêineres do frontend e do backend.
+
+O comando `docker compose ps` confirmou que ambos estavam em execução.
+
+A aplicação foi acessada em `http://localhost:8080`, exibindo a mensagem "Hello, World!" e confirmando a comunicação com o backend Python.
