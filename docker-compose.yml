@@ -1,0 +1,17 @@
+
+services:
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    expose:
+      - "5000"
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
