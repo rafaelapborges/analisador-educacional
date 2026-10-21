@@ -23,3 +23,29 @@ A captura `docs/print_interface_etapa2.png` foi realizada com Chromium. O navega
 - Confirmação de que as alterações estão no GitHub após commit/push.
 
 Não se afirma que os testes do Flask em Docker ou do ambiente de implantação passaram: **não foram executados aqui** porque Docker e Flask não estão disponíveis no ambiente de geração.
+
+
+## Validação da segunda etapa — 20/10/2026
+
+A aplicação foi iniciada utilizando Docker Compose no ambiente Windows.
+
+- Frontend: contêiner iniciado com sucesso.
+- Backend: contêiner iniciado e saudável (Healthy).
+- Interface acessada em http://localhost:8080.
+- Três exemplos de código Python selecionados e enviados com sucesso.
+- Validação de código vazio apresentada corretamente.
+- Comunicação entre frontend e backend confirmada.
+
+### Testes automatizados
+
+Comando executado:
+
+python -m pytest tests -v
+
+Resultado: **12 testes aprovados, 0 falhas, em 17,87 segundos**.
+
+Os testes abrangem validação de entrada, endpoints, comunicação,
+interação com a interface e regressão.
+
+A execução foi realizada no Windows com Python 3.13.7
+e pytest 9.1.1.
