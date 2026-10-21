@@ -1,110 +1,132 @@
+# Analisador Educacional de Código Python — Etapa 2
 
-# Analisador Educacional de Código Python
+Repositório original: https://github.com/rafaelapborges/analisador-educacional  
+Branch-base consultada: `main` (commit `b798bff11d3f6fb2b0fb6139fb0ead4439032d2a`)
 
-## Descrição
-Este projeto tem como objetivo desenvolver um software
-educacional para auxiliar no aprendizado de análise
-léxica, sintática e semântica de códigos Python.
+## Sobre o projeto
 
-## Linguagem escolhida
-A linguagem escolhida foi Python, por possuir uma
-sintaxe simples e ser amplamente utilizada no ensino
-de programação.
+Este projeto tem como objetivo desenvolver um **software educacional** para auxiliar na aprendizagem das análises léxica, sintática e semântica de código Python. A segunda etapa disponibiliza a **entrada, seleção e validação inicial de código**, sem fazer análise léxica, sintática ou semântica nesta versão.
 
-## Subconjunto inicial
-O software abordará inicialmente:
-
-- Declaração e atribuição de variáveis
-- Números inteiros
-- Operadores aritméticos (+, -, *, /)
-- Expressões aritméticas simples
+O subconjunto inicial, preservado da primeira etapa, considera **atribuição de variáveis, números inteiros, operações `+`, `-`, `*`, `/` e expressões aritméticas simples**. Esse recorte é o plano para etapas futuras; **a versão atual aceita o texto enviado, mas ainda não verifica se ele pertence à gramática**.
 
 ## Tecnologias
-- Python
-- Flask
-- HTML, CSS e JavaScript
-- Docker e Docker Compose
 
-## Etapa atual
-Criação da estrutura inicial do projeto,
-configuração do ambiente Docker e implementação
-de uma página web com a mensagem "Hello, World!".
+- Frontend: HTML, CSS e JavaScript, servido via Nginx;
+- Backend: Python 3.12 e Flask 3.1.1; Gunicorn na imagem Docker;
+- Ambiente: Docker Compose, com serviços `frontend` e `backend`;
+- Testes: pytest (lógica e HTTP local) e Playwright (interações do navegador).
 
+## Recursos da segunda etapa
 
-## Pré-requisitos
+1. Identificação do software e da linguagem (Python simplificado).
+2. Área para escrever, colar e editar código-fonte.
+3. Três exemplos selecionáveis e editáveis.
+4. Botão para enviar o código ao backend, com resposta verificável.
+5. Painel de resultado com confirmação de recebimento e quantidade de linhas/caracteres.
+6. Mensagens para campo vazio, apenas espaços, JSON ausente ou inválido, tipo incorreto, limite de tamanho e falhas de rede.
+7. Testes automatizados e registro dos resultados.
+8. Compatibilidade com a rota da primeira etapa: `GET /api/hello` → `{"message":"Hello, World!"}`.
 
-Para executar o projeto, é necessário ter:
+## Exemplos
 
-- Git instalado
-- Docker Desktop instalado e em execução
-- Docker Compose V2
+- **Variáveis e atribuição:** `numero = 10` e `total = 5`.
+- **Soma e subtração:** `soma = 10 + 5` e `resto = soma - 2`.
+- **Multiplicação e divisão:** `dobro = 6 * 2` e `quociente = dobro / 3`.
 
-Para verificar as versões instaladas:
+Cada um é um **texto de entrada** para futura análise; neste estágio seu conteúdo não é interpretado nem executado.
 
-```bash
-git --version
-docker --version
-docker compose version
-```
+## Como executar no Docker
 
-## Como executar o projeto
-
-1. Abra o terminal e clone o repositório:
+Pré-requisitos: Docker Desktop (ou Docker Engine) e Docker Compose v2.
 
 ```bash
 git clone https://github.com/rafaelapborges/analisador-educacional.git
-```
-
-2. Entre na pasta do projeto:
-
-```bash
 cd analisador-educacional
-```
-
-3. Inicie os contêineres:
-
-```bash
 docker compose up --build -d
-```
-
-4. Acesse a aplicação no navegador:
-
-http://localhost:8080
-
-A página deverá exibir a mensagem "Hello, World!"
-e informar que o backend está conectado.
-
-## Como verificar os contêineres
-
-```bash
 docker compose ps
 ```
 
-## Como encerrar a aplicação
+Acesse **http://localhost:8080**. Para encerrar: `docker compose down`.
 
-```bash
-docker compose down
+> Ao baixar este ZIP de integração, abra o terminal na pasta extraída e execute diretamente `docker compose up --build -d`. Os comandos de `git clone` acima servem para o repositório depois de você enviar estas alterações para o GitHub.
+
+O frontend é servido por Nginx e faz chamadas relativas a `/api/`, encaminhadas por proxy à aplicação Flask no serviço `backend`.
+
+## Contrato da API
+
+- `GET /api/hello`: retorno de compatibilidade da primeira etapa, HTTP 200.
+- `GET /api/health`: `{"ok":true,"servico":"compiladores","status":"ativo"}`, HTTP 200.
+- `POST /api/analisar` com `Content-Type: application/json`, exemplo:
+
+```json
+{"codigo":"numero = 10"}
 ```
 
-## Validação
+Resposta de sucesso: `200` com `ok`, `recebido`, `mensagem`, `linhas`, `caracteres` e `proxima_etapa`. Falhas: `400` (campo ausente, texto vazio ou inválido), `415` (tipo de conteúdo incorreto), `413` (mais de 12.000 caracteres).
 
-O projeto foi executado localmente com Docker Compose.
+As validações são aplicadas no backend e as mensagens são exibidas com clareza na interface. **Nenhum código é executado e nenhum programa é compilado**.
 
-Resultados observados:
+## Testes automatizados
 
-- Imagem do frontend construída com sucesso.
-- Imagem do backend construída com sucesso.
-- Contêineres iniciados.
-- Aplicação acessível em http://localhost:8080.
-- Mensagem "Hello, World!" exibida.
-- Comunicação entre frontend e backend confirmada.
+Com Python e as dependências de testes instaladas (`pytest`, `playwright` e navegador Chromium), execute:
 
-A instalação limpa foi realizada e validada com sucesso.
+```bash
+python -m pytest tests -q
+```
 
-O repositório foi clonado em uma nova pasta chamada `teste-instalacao`, seguindo os comandos documentados no README.
+O conjunto cobre regras de entrada, endpoint HTTP local, fluxo da interface e regressão do antigo `/api/hello`. A suíte de navegador utiliza o servidor local de **pré-visualização** (`backend/preview_server.py`), que chama a mesma função de validação do Flask, mas **não substitui os testes reais de Nginx/Flask/Docker**.
 
-Foi executado o comando `docker compose up --build -d`, que construiu e iniciou os contêineres do frontend e do backend.
+Para verificar a imagem Docker no computador:
 
-O comando `docker compose ps` confirmou que ambos estavam em execução.
+```bash
+docker compose config
+docker compose up --build -d
+docker compose ps
+docker compose exec backend python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:5000/api/hello').read())"
+docker compose exec backend python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:5000/api/health').read())"
+```
 
-A aplicação foi acessada em `http://localhost:8080`, exibindo a mensagem "Hello, World!" e confirmando a comunicação com o backend Python.
+Veja `docs/registro_testes.md` e `docs/print_interface_etapa2.png` para o registro local. Os testes de Docker Compose **precisam ser realizados no seu computador**, pois esse ambiente de geração não possui Docker.
+
+## Estrutura do projeto
+
+```text
+analisador-educacional/
+├── backend/
+│   ├── app.py
+│   ├── service.py
+│   ├── preview_server.py
+│   ├── requirements.txt
+│   └── Dockerfile
+├── frontend/
+│   ├── index.html
+│   ├── style.css
+│   ├── script.js
+│   ├── nginx.conf
+│   └── Dockerfile
+├── tests/
+├── docs/
+├── docker-compose.yml
+└── README.md
+```
+
+## Limitações e próxima etapa
+
+- A versão atual **não executa** código Python.
+- **Não realiza** tokenização, parsing, nem identifica erros léxicos, sintáticos ou semânticos.
+- **Não armazena** arquivos enviados em banco de dados.
+- O escopo da gramática didática será formalizado e implementado progressivamente.
+- Docker e Flask em contêiner ainda precisam de verificação no computador da entrega.
+
+## Como publicar as alterações
+
+Após comparar os arquivos com a sua cópia do repositório e executar os testes:
+
+```bash
+git status
+git add .
+git commit -m "Etapa 2: interface de entrada Python, API e testes automatizados"
+git push origin main
+```
+
+Para preservar seu histórico Git, **copie o conteúdo da pasta deste ZIP para dentro do repositório clonado**, em vez de enviar a pasta extraída como um repositório novo. A conexão GitHub desta sessão tem acesso somente de leitura ao seu repositório; nenhum commit foi enviado automaticamente.

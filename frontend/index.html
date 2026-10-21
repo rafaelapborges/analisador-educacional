@@ -1,20 +1,53 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analisador Educacional</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Laboratório educacional de compiladores — entrada de código e validação inicial.">
+  <title>Analisador Educacional | LexLab</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/script.js" defer></script>
 </head>
 <body>
-    <h1>Analisador Educacional</h1>
-
-    <p>Projeto de análise de código Python</p>
-
-    <h2 id="mensagem">Carregando...</h2>
-
-    <p id="status">Conectando ao backend...</p>
-
-    <script src="script.js"></script>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Navegação">
+      <a class="brand" href="/" aria-label="Página inicial do LexLab">
+        <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+        <span><strong>LexLab</strong><small>Analisador educacional</small></span>
+      </a>
+      <div class="nav-label">ESPAÇO DE APRENDIZAGEM</div>
+      <div class="nav-link active"><span class="icon">⌘</span> Editor de código</div>
+      <div class="nav-link disabled"><span class="icon">◈</span> Análise léxica <small>EM BREVE</small></div>
+      <div class="nav-link disabled"><span class="icon">⑂</span> Análise sintática <small>EM BREVE</small></div>
+      <div class="side-info">
+        <span class="label-light">ETAPA 02 / PROJETO</span>
+        <strong>Prepare seu código.</strong>
+        <p>Escreva, experimente e envie pequenos exemplos para validação inicial.</p>
+        <span class="side-pill">● Ambiente educacional</span>
+      </div>
+      <div class="sidebar-bottom">Projeto acadêmico · 2026</div>
+    </aside>
+    <main class="main">
+      <div class="topbar"><span class="breadcrumb">Projeto <b>/</b> Laboratório interativo</span><span class="status-top"><i></i> Etapa de entrada</span></div>
+      <header class="hero">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> AMBIENTE DE PRÁTICA</div>
+        <h1>Explore o código.<br><span>Aprenda cada etapa.</span></h1>
+        <p>Escreva ou selecione um exemplo em <b>Python simplificado</b>. Envie seu código para validar a entrada e preparar as próximas análises.</p>
+        <div class="hero-tags"><span>Python simplificado</span><span>Editor interativo</span><span>Validação inicial</span></div>
+      </header>
+      <div class="section-heading"><div><h2>Seu espaço de experimentação</h2><p>Comece com um exemplo ou escreva seu próprio programa.</p></div><span class="step-label">01 — ESCREVER E ENVIAR</span></div>
+      <section class="workspace" aria-label="Editor e resultado">
+        <div class="panel editor-panel">
+          <div class="panel-top"><div><span class="blue-icon">{ }</span><strong>Editor de código</strong></div><span class="panel-meta">ARQUIVO · exemplo.py</span></div>
+          <div class="examples-bar"><label for="exemplo">Exemplos prontos</label><select id="exemplo" aria-label="Selecionar exemplo"><option value="variavel">01 · Variáveis e atribuição</option><option value="aritmetica">02 · Soma e subtração</option><option value="operadores">03 · Multiplicação e divisão</option></select></div>
+          <div class="code-area"><div id="line-numbers" class="line-numbers" aria-hidden="true">1<br>2<br>3</div><textarea id="codigo" aria-label="Código-fonte" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea></div>
+          <div class="editor-actions"><span class="hint"><span class="info-dot">i</span> Código de exemplo editável</span><div class="action-right"><button id="limpar" type="button" class="btn-ghost">Limpar</button><button id="analisar" type="button" class="btn-primary"><span class="play">▶</span> Processar código <span class="arrow">→</span></button></div></div>
+        </div>
+        <div class="panel results-panel"><div class="panel-top"><div><span class="green-icon">✓</span><strong>Resultado</strong></div><span id="result-status" class="result-badge neutral">AGUARDANDO</span></div><div class="result-body" id="result-body" aria-live="polite"><div class="empty-icon">↗</div><h3>Pronto para começar</h3><p>O resultado aparecerá aqui depois que você enviar um código para validação.</p></div><div class="result-footer"><span>ESTADO DA APLICAÇÃO</span><span id="footer-status">Aguardando entrada</span></div></div>
+      </section>
+      <div class="bottom-grid"><div class="mini"><span class="mini-icon">01</span><div><strong>Escreva ou escolha</strong><p>Selecione um exemplo e altere livremente o código.</p></div></div><div class="mini"><span class="mini-icon">02</span><div><strong>Envie para validar</strong><p>A aplicação confirma o recebimento pelo servidor.</p></div></div><div class="mini"><span class="mini-icon">03</span><div><strong>Continue aprendendo</strong><p>As análises léxica e sintática chegarão nas próximas etapas.</p></div></div></div>
+      <footer class="main-footer">LexLab · Software educacional de compiladores <span>Etapa 02 — Entrada de código-fonte</span></footer>
+    </main>
+  </div>
 </body>
 </html>
