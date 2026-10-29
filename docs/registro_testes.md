@@ -49,3 +49,24 @@ interação com a interface e regressão.
 
 A execução foi realizada no Windows com Python 3.13.7
 e pytest 9.1.1.
+
+## Validação da Etapa 3 — 29/10/2026
+
+A aplicação foi executada localmente com Docker Compose.
+
+- Backend e frontend iniciados corretamente.
+- Scanner identificou 6 tokens no exemplo de variáveis.
+- Tokens exibidos com tipo, lexema, linha e coluna.
+- Caractere inválido "$" identificado na linha 2, coluna 20.
+- Mensagens de erro apresentadas corretamente.
+- Prints reais da interface e do erro léxico salvos.
+
+### Testes automatizados
+
+Comando executado:
+python -m pytest tests -v
+
+Resultado: Todos os testes aprovados na execução local.
+
+### Situação
+Análise léxica validada no ambiente local.s

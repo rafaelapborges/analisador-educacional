@@ -45,7 +45,9 @@ def test_http_validacao_endpoints(server):
     with urllib.request.urlopen(BASE+'/api/hello',timeout=4) as resp:
         assert resp.status==200 and json.load(resp)['message']=='Hello, World!'
     s,data=post({'codigo':'x = 1'})
-    assert s==200 and data['ok'] and data['recebido']
+    assert s==200 and data['ok'] and data['recebido'] and len(data['tokens'])==3
+    s,data=post({'codigo':'x @ 1'})
+    assert s==422 and not data['sucesso'] and data['erros'][0]['coluna']==3
     s,data=post({'codigo':'   '})
     assert s==400 and data['codigo_erro']=='ENTRADA_VAZIA'
     s,data=post({})
@@ -99,13 +101,40 @@ def test_interface_exemplos_e_comunicacao(server):
         editor.fill('nota = 10 + 3\nprint(nota)')
         assert 'nota = 10 + 3' in editor.input_value()
         page.locator('#analisar').click()
-        page.get_by_text('Código recebido com sucesso',exact=True).wait_for(timeout=4000)
-        assert page.locator('#result-status').inner_text()=='RECEBIDO'
-        assert page.locator('#footer-status').inner_text()=='Resposta recebida do backend'
+        page.get_by_text('Tokens identificados',exact=True).wait_for(timeout=4000)
+        assert page.locator('#result-status').inner_text()=='CONCLUÍDO'
+        assert page.locator('#footer-status').inner_text()=='Análise léxica realizada no backend'
+        assert page.locator('#tokens-tbody tr').count() >= 8
+        assert page.locator('#token-step').inner_text().startswith('1 de ')
+        page.locator('#token-next').click()
+        assert page.locator('#token-step').inner_text().startswith('2 de ')
+        page.locator('#exemplo').select_option('erro')
+        page.locator('#analisar').click()
+        page.get_by_text('Erros léxicos identificados').wait_for(timeout=4000)
+        assert page.locator('#result-status').inner_text()=='COM ERROS'
+        assert '@' in page.locator('#source-highlight').inner_text()
+        assert page.locator('#errors-list .lexical-error').count()==1
         page.locator('#exemplo').select_option('operadores')
         assert 'quociente = dobro / 3' in editor.input_value()
         page.locator('#limpar').click()
         assert editor.input_value()==''
         page.locator('#analisar').click()
         assert page.get_by_text('Informe um código-fonte antes de solicitar a análise.').count()>=1
+        browser.close()
+
+
+def test_interface_mobile_sem_rolagem_horizontal(server):
+    """A apresentação em celular permanece legível e o editor pode ser utilizado."""
+    from playwright.sync_api import sync_playwright
+    from os import environ
+    from shutil import which
+    with sync_playwright() as p:
+        executable = environ.get('CHROMIUM_EXECUTABLE') or which('chromium') or which('chromium-browser')
+        kwargs = {'executable_path': executable} if executable else {}
+        browser = p.chromium.launch(headless=True, args=['--no-sandbox', '--disable-dev-shm-usage'], **kwargs)
+        page = browser.new_page(viewport={'width': 390, 'height': 844}, device_scale_factor=1)
+        page.set_content(_html_local(), wait_until='domcontentloaded')
+        assert page.locator('#codigo').is_visible()
+        assert page.locator('#exemplo').is_visible()
+        assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
         browser.close()

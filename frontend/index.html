@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Laboratório educacional de compiladores — entrada de código e validação inicial.">
+  <meta name="description" content="Laboratório educacional de compiladores — scanner didático e visualização de tokens.">
   <title>Analisador Educacional | LexLab</title>
   <link rel="stylesheet" href="/style.css">
   <script src="/script.js" defer></script>
@@ -17,36 +17,56 @@
       </a>
       <div class="nav-label">ESPAÇO DE APRENDIZAGEM</div>
       <div class="nav-link active"><span class="icon">⌘</span> Editor de código</div>
-      <div class="nav-link disabled"><span class="icon">◈</span> Análise léxica <small>EM BREVE</small></div>
+      <div class="nav-link current"><span class="icon">◈</span> Análise léxica <small>ETAPA 03</small></div>
       <div class="nav-link disabled"><span class="icon">⑂</span> Análise sintática <small>EM BREVE</small></div>
       <div class="side-info">
-        <span class="label-light">ETAPA 02 / PROJETO</span>
-        <strong>Prepare seu código.</strong>
-        <p>Escreva, experimente e envie pequenos exemplos para validação inicial.</p>
+        <span class="label-light">ETAPA 03 / PROJETO</span>
+        <strong>Explore cada token.</strong>
+        <p>Digite código e veja a identificação de lexemas, categorias e erros.</p>
         <span class="side-pill">● Ambiente educacional</span>
       </div>
       <div class="sidebar-bottom">Projeto acadêmico · 2026</div>
     </aside>
     <main class="main">
-      <div class="topbar"><span class="breadcrumb">Projeto <b>/</b> Laboratório interativo</span><span class="status-top"><i></i> Etapa de entrada</span></div>
+      <div class="topbar"><span class="breadcrumb">Projeto <b>/</b> Laboratório interativo</span><span class="status-top"><i></i> Scanner ativo</span></div>
       <header class="hero">
         <div class="eyebrow"><span class="eyebrow-dot"></span> AMBIENTE DE PRÁTICA</div>
         <h1>Explore o código.<br><span>Aprenda cada etapa.</span></h1>
-        <p>Escreva ou selecione um exemplo em <b>Python simplificado</b>. Envie seu código para validar a entrada e preparar as próximas análises.</p>
-        <div class="hero-tags"><span>Python simplificado</span><span>Editor interativo</span><span>Validação inicial</span></div>
+        <p>Escreva ou selecione um exemplo em <b>Python simplificado</b>. Envie o código para identificar tokens, lexemas e possíveis erros léxicos.</p>
+        <div class="hero-tags"><span>Python simplificado</span><span>Editor interativo</span><span>Análise léxica</span></div>
       </header>
-      <div class="section-heading"><div><h2>Seu espaço de experimentação</h2><p>Comece com um exemplo ou escreva seu próprio programa.</p></div><span class="step-label">01 — ESCREVER E ENVIAR</span></div>
+      <div class="section-heading"><div><h2>Seu espaço de experimentação</h2><p>Comece com um exemplo ou escreva seu próprio programa.</p></div><span class="step-label">01 — ESCREVER E ANALISAR</span></div>
       <section class="workspace" aria-label="Editor e resultado">
         <div class="panel editor-panel">
           <div class="panel-top"><div><span class="blue-icon">{ }</span><strong>Editor de código</strong></div><span class="panel-meta">ARQUIVO · exemplo.py</span></div>
-          <div class="examples-bar"><label for="exemplo">Exemplos prontos</label><select id="exemplo" aria-label="Selecionar exemplo"><option value="variavel">01 · Variáveis e atribuição</option><option value="aritmetica">02 · Soma e subtração</option><option value="operadores">03 · Multiplicação e divisão</option></select></div>
+          <div class="examples-bar"><label for="exemplo">Exemplos prontos</label><select id="exemplo" aria-label="Selecionar exemplo"><option value="variavel">01 · Variáveis e atribuição</option><option value="aritmetica">02 · Soma e subtração</option><option value="operadores">03 · Multiplicação e divisão</option><option value="condicional">04 · Condição e comparação</option><option value="erro">05 · Exemplo de erro léxico</option></select></div>
           <div class="code-area"><div id="line-numbers" class="line-numbers" aria-hidden="true">1<br>2<br>3</div><textarea id="codigo" aria-label="Código-fonte" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea></div>
-          <div class="editor-actions"><span class="hint"><span class="info-dot">i</span> Código de exemplo editável</span><div class="action-right"><button id="limpar" type="button" class="btn-ghost">Limpar</button><button id="analisar" type="button" class="btn-primary"><span class="play">▶</span> Processar código <span class="arrow">→</span></button></div></div>
+          <div class="editor-actions"><span class="hint"><span class="info-dot">i</span> Código de exemplo editável</span><div class="action-right"><button id="limpar" type="button" class="btn-ghost">Limpar</button><button id="analisar" type="button" class="btn-primary"><span class="play">▶</span> Analisar código <span class="arrow">→</span></button></div></div>
         </div>
-        <div class="panel results-panel"><div class="panel-top"><div><span class="green-icon">✓</span><strong>Resultado</strong></div><span id="result-status" class="result-badge neutral">AGUARDANDO</span></div><div class="result-body" id="result-body" aria-live="polite"><div class="empty-icon">↗</div><h3>Pronto para começar</h3><p>O resultado aparecerá aqui depois que você enviar um código para validação.</p></div><div class="result-footer"><span>ESTADO DA APLICAÇÃO</span><span id="footer-status">Aguardando entrada</span></div></div>
+        <div class="panel results-panel"><div class="panel-top"><div><span class="green-icon">✓</span><strong>Resultado</strong></div><span id="result-status" class="result-badge neutral">AGUARDANDO</span></div><div class="result-body" id="result-body" aria-live="polite"><div class="empty-icon">↗</div><h3>Pronto para começar</h3><p>Os tokens e os erros aparecerão aqui depois da análise.</p></div><div class="result-footer"><span>ESTADO DA APLICAÇÃO</span><span id="footer-status">Aguardando entrada</span></div></div>
       </section>
-      <div class="bottom-grid"><div class="mini"><span class="mini-icon">01</span><div><strong>Escreva ou escolha</strong><p>Selecione um exemplo e altere livremente o código.</p></div></div><div class="mini"><span class="mini-icon">02</span><div><strong>Envie para validar</strong><p>A aplicação confirma o recebimento pelo servidor.</p></div></div><div class="mini"><span class="mini-icon">03</span><div><strong>Continue aprendendo</strong><p>As análises léxica e sintática chegarão nas próximas etapas.</p></div></div></div>
-      <footer class="main-footer">LexLab · Software educacional de compiladores <span>Etapa 02 — Entrada de código-fonte</span></footer>
+      <section id="lexical-section" class="analysis-section" hidden aria-label="Detalhes da análise léxica">
+        <div class="analysis-heading">
+          <div><span class="eyebrow">RESULTADO DA ANÁLISE LÉXICA</span><h2>Veja como o código foi dividido</h2><p>Cada parte reconhecida recebe uma categoria, um lexema e uma posição no código.</p></div>
+          <div class="token-controls"><button type="button" class="btn-ghost" id="token-prev" aria-label="Token anterior">← Anterior</button><span id="token-step" aria-live="polite">0 de 0</span><button type="button" class="btn-ghost" id="token-next" aria-label="Próximo token">Próximo →</button></div>
+        </div>
+        <div class="analysis-grid">
+          <div class="panel detail-panel">
+            <div class="panel-top"><div><span class="blue-icon">{ }</span><strong>Código identificado</strong></div><span class="panel-meta">DESTAQUE POR CATEGORIA</span></div>
+            <pre id="source-highlight" class="source-highlight" aria-label="Código-fonte com tokens destacados"></pre>
+            <div class="legend" aria-label="Legenda de categorias"><span class="leg-reservada">Reservada</span><span class="leg-identificador">Identificador</span><span class="leg-literal">Literal</span><span class="leg-operador">Operador</span><span class="leg-delimitador">Delimitador</span></div>
+            <p id="token-explanation" class="token-explanation" aria-live="polite">Selecione um token para conhecer sua classificação.</p>
+          </div>
+          <div class="panel detail-panel">
+            <div class="panel-top"><div><span class="green-icon">✓</span><strong>Tabela de tokens</strong></div><span id="token-total" class="panel-meta">0 TOKENS</span></div>
+            <div class="table-scroll"><table class="tokens-table"><thead><tr><th>Tipo</th><th>Lexema</th><th>Linha</th><th>Coluna</th></tr></thead><tbody id="tokens-tbody"></tbody></table></div>
+            <p class="table-hint">Clique em um token ou use os botões para acompanhar o reconhecimento.</p>
+          </div>
+        </div>
+        <div id="lexical-errors" class="lexical-errors" hidden><h3>Erros léxicos identificados</h3><div id="errors-list"></div></div>
+      </section>
+      <div class="bottom-grid"><div class="mini"><span class="mini-icon">01</span><div><strong>Escreva ou escolha</strong><p>Selecione um exemplo e altere livremente o código.</p></div></div><div class="mini"><span class="mini-icon">02</span><div><strong>Envie para validar</strong><p>O scanner devolve os tokens reconhecidos pelo servidor.</p></div></div><div class="mini"><span class="mini-icon">03</span><div><strong>Continue aprendendo</strong><p>Explore posições, categorias e erros; o parser virá depois.</p></div></div></div>
+      <footer class="main-footer">LexLab · Software educacional de compiladores <span>Etapa 03 — Análise léxica</span></footer>
     </main>
   </div>
 </body>

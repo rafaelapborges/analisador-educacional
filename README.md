@@ -1,132 +1,143 @@
-# Analisador Educacional de Código Python — Etapa 2
+# LexLab — analisador educacional de código Python simplificado
 
-Repositório original: https://github.com/rafaelapborges/analisador-educacional  
-Branch-base consultada: `main` (commit `b798bff11d3f6fb2b0fb6139fb0ead4439032d2a`)
+Repositório: https://github.com/rafaelapborges/analisador-educacional
 
-## Sobre o projeto
+## O que já funciona
 
-Este projeto tem como objetivo desenvolver um **software educacional** para auxiliar na aprendizagem das análises léxica, sintática e semântica de código Python. A segunda etapa disponibiliza a **entrada, seleção e validação inicial de código**, sem fazer análise léxica, sintática ou semântica nesta versão.
+O LexLab é um ambiente web para experimentar o reconhecimento de tokens em um subconjunto didático inspirado em Python. A **Etapa 3** acrescenta um scanner real, integrado ao backend e à interface. O projeto preserva o editor, os exemplos, a validação de entrada, a API Flask e o ambiente Docker das etapas anteriores.
 
-O subconjunto inicial, preservado da primeira etapa, considera **atribuição de variáveis, números inteiros, operações `+`, `-`, `*`, `/` e expressões aritméticas simples**. Esse recorte é o plano para etapas futuras; **a versão atual aceita o texto enviado, mas ainda não verifica se ele pertence à gramática**.
+O estudante pode escrever código, escolher um exemplo e clicar em **Analisar código**. O backend percorre o texto caractere a caractere e devolve uma lista de tokens e eventuais erros. A interface apresenta:
+
+- Lista de tokens com **tipo, lexema, linha e coluna**;
+- Código com cores por categoria; ao selecionar um token, a explicação e o destaque são sincronizados;
+- Navegação **Anterior / Próximo** para acompanhar cada token;
+- Contagens e mensagens de erro com localização, acumulando erros quando possível;
+- Cinco exemplos, incluindo um com erro léxico para experimentação.
+
+**Limite pedagógico:** o scanner não executa código e não verifica se a sequência de tokens obedece à gramática de Python. A análise sintática (parser) será implementada na Etapa 4.
 
 ## Tecnologias
 
-- Frontend: HTML, CSS e JavaScript, servido via Nginx;
-- Backend: Python 3.12 e Flask 3.1.1; Gunicorn na imagem Docker;
-- Ambiente: Docker Compose, com serviços `frontend` e `backend`;
-- Testes: pytest (lógica e HTTP local) e Playwright (interações do navegador).
+- Frontend: HTML, CSS e JavaScript puro, servido via Nginx;
+- Backend: Python 3.12, Flask e Gunicorn;
+- Scanner: módulo Python desenvolvido no projeto, sem bibliotecas externas de análise;
+- Contêineres: Docker Compose;
+- Testes: `pytest` e Playwright com Chromium.
 
-## Recursos da segunda etapa
+A escolha de Python para o scanner mantém a integração simples com o backend Flask e permite inspecionar cada regra de reconhecimento em código legível. O subconjunto de entrada é **inspirado** na sintaxe Python; não equivale à implementação completa do analisador léxico do CPython.
 
-1. Identificação do software e da linguagem (Python simplificado).
-2. Área para escrever, colar e editar código-fonte.
-3. Três exemplos selecionáveis e editáveis.
-4. Botão para enviar o código ao backend, com resposta verificável.
-5. Painel de resultado com confirmação de recebimento e quantidade de linhas/caracteres.
-6. Mensagens para campo vazio, apenas espaços, JSON ausente ou inválido, tipo incorreto, limite de tamanho e falhas de rede.
-7. Testes automatizados e registro dos resultados.
-8. Compatibilidade com a rota da primeira etapa: `GET /api/hello` → `{"message":"Hello, World!"}`.
+## Subconjunto léxico implementado
 
-## Exemplos
+| Categoria | Exemplos e regra |
+| --- | --- |
+| Palavras reservadas | `if`, `elif`, `else`, `while`, `and`, `or`, `not`, `True`, `False`, `None`, `pass` |
+| Identificadores | `[A-Za-z_][A-Za-z0-9_]*` (ex.: `total`, `_x1`) |
+| Inteiros | Dígitos `0` a `9` (ex.: `42`, `0`) |
+| Reais | Dígitos, ponto, dígitos (ex.: `12.5`, `0.75`) |
+| Strings | Aspas simples ou duplas; escapes básicos `\\`, `\\"`, `\\'`, `\\n`, `\\r`, `\\t`, `\\0` |
+| Operadores | `+`, `-`, `*`, `/`, `%`, `=`, `==`, `!=`, `<`, `>`, `<=`, `>=`, `**`, `//` |
+| Delimitadores | `(`, `)`, `[`, `]`, `{`, `}`, `:`, `,` |
+| Comentários | De `#` até o final da linha; ignorados |
+| Espaços | Espaços, tabulações, `\r` e `\n` são ignorados, com atualização da localização |
+| Entradas inválidas | Caracteres como `@`, `$`, `;`, números malformados, strings não terminadas e escapes não suportados geram erros léxicos |
 
-- **Variáveis e atribuição:** `numero = 10` e `total = 5`.
-- **Soma e subtração:** `soma = 10 + 5` e `resto = soma - 2`.
-- **Multiplicação e divisão:** `dobro = 6 * 2` e `quociente = dobro / 3`.
+O nome `print` é reconhecido como **identificador**, pois é função embutida de Python e não palavra reservada. `INDENT` e `DEDENT`, f-strings, notação exponencial, identificadores Unicode, strings multilinha, atributos com ponto e demais construções completas de Python **não são implementados** nesta etapa. Consulte `docs/escopo_lexico.md`.
 
-Cada um é um **texto de entrada** para futura análise; neste estágio seu conteúdo não é interpretado nem executado.
+## Exemplos de entrada
 
-## Como executar no Docker
+```python
+# Atribuições
+numero = 10
+total = 5
+```
 
-Pré-requisitos: Docker Desktop (ou Docker Engine) e Docker Compose v2.
+```python
+# Operações
+soma = 10 + 5
+resto = soma - 2
+```
+
+```python
+# Teste de erro: @ está fora do subconjunto
+numero = 12
+total = numero @ 2
+```
+
+## Executar com Docker Desktop
+
+Abra um terminal na pasta raiz do projeto:
 
 ```bash
-git clone https://github.com/rafaelapborges/analisador-educacional.git
-cd analisador-educacional
 docker compose up --build -d
 docker compose ps
 ```
 
-Acesse **http://localhost:8080**. Para encerrar: `docker compose down`.
+Depois abra **http://localhost:8080** e use os exemplos do editor. `docker compose down` encerra os serviços.
 
-> Ao baixar este ZIP de integração, abra o terminal na pasta extraída e execute diretamente `docker compose up --build -d`. Os comandos de `git clone` acima servem para o repositório depois de você enviar estas alterações para o GitHub.
+Os arquivos Docker foram mantidos, com a inclusão do `scanner.py` no Dockerfile do backend. O Nginx encaminha requisições `/api/` para o Flask em `backend:5000`. A porta 8080 é usada apenas pelo frontend, sem expor o backend diretamente.
 
-O frontend é servido por Nginx e faz chamadas relativas a `/api/`, encaminhadas por proxy à aplicação Flask no serviço `backend`.
+## Endpoints e contrato de comunicação
 
-## Contrato da API
+### `POST /api/analisar`
 
-- `GET /api/hello`: retorno de compatibilidade da primeira etapa, HTTP 200.
-- `GET /api/health`: `{"ok":true,"servico":"compiladores","status":"ativo"}`, HTTP 200.
-- `POST /api/analisar` com `Content-Type: application/json`, exemplo:
+Cabeçalho `Content-Type: application/json`, corpo:
 
 ```json
-{"codigo":"numero = 10"}
+{"codigo": "numero = 10"}
 ```
 
-Resposta de sucesso: `200` com `ok`, `recebido`, `mensagem`, `linhas`, `caracteres` e `proxima_etapa`. Falhas: `400` (campo ausente, texto vazio ou inválido), `415` (tipo de conteúdo incorreto), `413` (mais de 12.000 caracteres).
+Exemplo resumido de resposta HTTP **200**:
 
-As validações são aplicadas no backend e as mensagens são exibidas com clareza na interface. **Nenhum código é executado e nenhum programa é compilado**.
+```json
+{
+  "ok": true,
+  "sucesso": true,
+  "recebido": true,
+  "mensagem": "Análise léxica concluída: tokens reconhecidos.",
+  "linhas": 1,
+  "caracteres": 11,
+  "tokens": [
+    {"tipo": "IDENTIFICADOR", "lexema": "numero", "linha": 1, "coluna": 1, "inicio": 0, "fim": 6},
+    {"tipo": "OPERADOR", "lexema": "=", "linha": 1, "coluna": 8, "inicio": 7, "fim": 8},
+    {"tipo": "LITERAL_INTEIRO", "lexema": "10", "linha": 1, "coluna": 10, "inicio": 9, "fim": 11}
+  ],
+  "erros": [],
+  "contagem": {"IDENTIFICADOR": 1, "OPERADOR": 1, "LITERAL_INTEIRO": 1},
+  "proxima_etapa": "A análise sintática será implementada na Etapa 4."
+}
+```
 
-## Testes automatizados
+Os campos `inicio` e `fim` são índices de caracteres do texto original, em que `fim` é exclusivo; são utilizados somente para destacar tokens na interface. `linha` e `coluna` começam em 1. Para falhas léxicas, o servidor retorna HTTP **422**, `ok: false`, `sucesso: false`, preservando os tokens válidos e preenchendo `erros` com `{tipo, lexema, linha, coluna, mensagem, inicio, fim}`.
 
-Com Python e as dependências de testes instaladas (`pytest`, `playwright` e navegador Chromium), execute:
+Falhas de entrada continuam com os códigos da Etapa 2: **400** para JSON inválido, ausência do campo, tipo incorreto e código vazio; **413** para código com mais de 12.000 caracteres; **415** para tipo de conteúdo não JSON.
+
+Outras rotas: `GET /api/hello` (compatibilidade da Etapa 1) e `GET /api/health` (verificação de saúde).
+
+## Executar os testes
+
+Instale as dependências de teste no seu computador, se necessário:
 
 ```bash
-python -m pytest tests -q
+python -m pip install pytest requests playwright
+python -m playwright install chromium
 ```
 
-O conjunto cobre regras de entrada, endpoint HTTP local, fluxo da interface e regressão do antigo `/api/hello`. A suíte de navegador utiliza o servidor local de **pré-visualização** (`backend/preview_server.py`), que chama a mesma função de validação do Flask, mas **não substitui os testes reais de Nginx/Flask/Docker**.
-
-Para verificar a imagem Docker no computador:
+Depois execute na pasta raiz:
 
 ```bash
-docker compose config
-docker compose up --build -d
-docker compose ps
-docker compose exec backend python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:5000/api/hello').read())"
-docker compose exec backend python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:5000/api/health').read())"
+python -m pytest tests -v
 ```
 
-Veja `docs/registro_testes.md` e `docs/print_interface_etapa2.png` para o registro local. Os testes de Docker Compose **precisam ser realizados no seu computador**, pois esse ambiente de geração não possui Docker.
+Os testes cobrem categorias e posições do scanner, entradas inválidas, strings, operações, serviço, endpoint HTTP local, navegador, novos exemplos e regressão dos recursos anteriores. A suíte de interface usa `backend/preview_server.py`, que reaproveita `service.process_source` e **não substitui** os testes do Flask e Nginx no Docker.
 
-## Estrutura do projeto
+O registro de testes da Etapa 3 fica em `docs/registro_testes_etapa3.md`. O documento separa o que foi executado neste ambiente das verificações que precisam ser repetidas no Windows.
 
-```text
-analisador-educacional/
-├── backend/
-│   ├── app.py
-│   ├── service.py
-│   ├── preview_server.py
-│   ├── requirements.txt
-│   └── Dockerfile
-├── frontend/
-│   ├── index.html
-│   ├── style.css
-│   ├── script.js
-│   ├── nginx.conf
-│   └── Dockerfile
-├── tests/
-├── docs/
-├── docker-compose.yml
-└── README.md
-```
+## Registrar a demonstração
 
-## Limitações e próxima etapa
+Use `docs/roteiro_demonstracao_etapa3.md` como guia. O novo print `docs/print_interface_etapa3.png` representa uma captura do navegador de pré-visualização, com o scanner real do projeto. Tire também uma captura da versão Docker no seu computador ao concluir a validação.
 
-- A versão atual **não executa** código Python.
-- **Não realiza** tokenização, parsing, nem identifica erros léxicos, sintáticos ou semânticos.
-- **Não armazena** arquivos enviados em banco de dados.
-- O escopo da gramática didática será formalizado e implementado progressivamente.
-- Docker e Flask em contêiner ainda precisam de verificação no computador da entrega.
+## Limitações e continuidade
 
-## Como publicar as alterações
+A Etapa 3 faz **análise léxica**, não parsing, verificação de tipos nem geração de código. O conteúdo de indentação ainda é ignorado. Por isso, `if (` pode resultar em tokenização bem-sucedida mesmo com sintaxe inválida. O reconhecimento de regras gramaticais e blocos fica para a **Etapa 4**; semântica e demais fases são previstas posteriormente.
 
-Após comparar os arquivos com a sua cópia do repositório e executar os testes:
-
-```bash
-git status
-git add .
-git commit -m "Etapa 2: interface de entrada Python, API e testes automatizados"
-git push origin main
-```
-
-Para preservar seu histórico Git, **copie o conteúdo da pasta deste ZIP para dentro do repositório clonado**, em vez de enviar a pasta extraída como um repositório novo. A conexão GitHub desta sessão tem acesso somente de leitura ao seu repositório; nenhum commit foi enviado automaticamente.
+Para publicar, copie os arquivos de atualização sobre a pasta já clonada, execute testes, confira no GitHub Desktop e use um commit descritivo. Não substitua a pasta `.git` nem apague as capturas e registros anteriores.

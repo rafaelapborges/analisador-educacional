@@ -1,4 +1,4 @@
-"""Servidor Flask para a segunda etapa do software educacional."""
+"""Servidor Flask para a terceira etapa do software educacional."""
 from flask import Flask, jsonify, request
 from service import process_source
 
