@@ -21,8 +21,7 @@ Consulte `docs/gramatica_etapa4.md`, `docs/diferencial_etapa4.md`,
 `docs/fluxograma_etapa4.png`.
 
 Execute `docker compose up --build -d` e `python -m pytest tests -v`.
-Esta documentação descreve a atualização proposta; registrar resultados da Etapa 4
-somente após testar no ambiente local. A análise semântica e a tabela de símbolos
+A Etapa 4 foi implementada e validada localmente. Os registros de testes estão documentados em `docs/registro_testes_etapa4.md`. A análise semântica e a tabela de símbolos
 permanecem **futuras (Etapa 5)**.
 
 ## Histórico da Etapa 3
@@ -39,8 +38,7 @@ O estudante pode escrever código, escolher um exemplo e clicar em **Analisar c�
 - Contagens e mensagens de erro com localização, acumulando erros quando possível;
 - Cinco exemplos, incluindo um com erro léxico para experimentação.
 
-**Limite pedagógico:** o scanner não executa código e não verifica se a sequência de tokens obedece à gramática de Python. A análise sintática (parser) será implementada na Etapa 4.
-
+**Limite pedagógico:** o scanner não executa código e não verifica se a sequência de tokens obedece à gramática de Python. A análise sintática (parser) foi implementada na Etapa 4.
 ## Tecnologias
 
 - Frontend: HTML, CSS e JavaScript puro, servido via Nginx;
@@ -163,9 +161,8 @@ Use `docs/roteiro_demonstracao_etapa3.md` como guia. O novo print `docs/print_in
 
 ## Limitações e continuidade
 
-A Etapa 3 faz **análise léxica**, não parsing, verificação de tipos nem geração de código. O conteúdo de indentação ainda é ignorado. Por isso, `if (` pode resultar em tokenização bem-sucedida mesmo com sintaxe inválida. O reconhecimento de regras gramaticais e blocos fica para a **Etapa 4**; semântica e demais fases são previstas posteriormente.
+Na **Etapa 3**, o scanner realizava apenas **análise léxica**, sem parsing, verificação de tipos ou geração de código. A indentação ainda não era analisada sintaticamente. Na **Etapa 4**, foram implementados o parser, a verificação de regras gramaticais e a análise de blocos indentados. A análise semântica e as demais fases permanecem previstas para etapas posteriores.
 
-Para publicar, copie os arquivos de atualização sobre a pasta já clonada, execute testes, confira no GitHub Desktop e use um commit descritivo. Não substitua a pasta `.git` nem apague as capturas e registros anteriores.
 
 ## Evidências de funcionamento — Etapa 4
 
