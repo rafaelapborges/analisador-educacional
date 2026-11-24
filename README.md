@@ -166,3 +166,13 @@ Use `docs/roteiro_demonstracao_etapa3.md` como guia. O novo print `docs/print_in
 A Etapa 3 faz **análise léxica**, não parsing, verificação de tipos nem geração de código. O conteúdo de indentação ainda é ignorado. Por isso, `if (` pode resultar em tokenização bem-sucedida mesmo com sintaxe inválida. O reconhecimento de regras gramaticais e blocos fica para a **Etapa 4**; semântica e demais fases são previstas posteriormente.
 
 Para publicar, copie os arquivos de atualização sobre a pasta já clonada, execute testes, confira no GitHub Desktop e use um commit descritivo. Não substitua a pasta `.git` nem apague as capturas e registros anteriores.
+
+## Evidências de funcionamento — Etapa 4
+
+### Análise léxica e árvore sintática (AST)
+
+![Análise léxica e AST do LexLab](docs/print_analise_ast_etapa4.png)
+
+### Identificação de erros sintáticos
+
+![Erros sintáticos com explicações didáticas](docs/print_erro_sintatico_etapa4.png)
