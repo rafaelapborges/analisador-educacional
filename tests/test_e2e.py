@@ -60,9 +60,13 @@ def _html_local():
     page=(ROOT/'frontend'/'index.html').read_text(encoding='utf-8')
     css=(ROOT/'frontend'/'style.css').read_text(encoding='utf-8')
     js=(ROOT/'frontend'/'script.js').read_text(encoding='utf-8')
+    astjs=(ROOT/'frontend'/'ast_ui.js').read_text(encoding='utf-8')
+    astcss=(ROOT/'frontend'/'ast_ui.css').read_text(encoding='utf-8')
     page=page.replace('<link rel="stylesheet" href="/style.css">', '<style>'+css+'</style>')
+    page=page.replace('<script src="/ast_ui.js" defer></script>', '')
     page=page.replace('<script src="/script.js" defer></script>', '')
-    return page.replace('</body>', '<script>'+js+'</script></body>')
+    page=page.replace('<link rel="stylesheet" href="/ast_ui.css">', '<style>'+astcss+'</style>')
+    return page.replace('</body>', '<script>'+astjs+'</script><script>'+js+'</script></body>')
 
 
 def _call_backend(json_body):
@@ -103,7 +107,7 @@ def test_interface_exemplos_e_comunicacao(server):
         page.locator('#analisar').click()
         page.get_by_text('Tokens identificados',exact=True).wait_for(timeout=4000)
         assert page.locator('#result-status').inner_text()=='CONCLUÍDO'
-        assert page.locator('#footer-status').inner_text()=='Análise léxica realizada no backend'
+        assert page.locator('#footer-status').inner_text()=='Análises léxica e sintática realizadas no backend'
         assert page.locator('#tokens-tbody tr').count() >= 8
         assert page.locator('#token-step').inner_text().startswith('1 de ')
         page.locator('#token-next').click()
@@ -137,4 +141,37 @@ def test_interface_mobile_sem_rolagem_horizontal(server):
         assert page.locator('#codigo').is_visible()
         assert page.locator('#exemplo').is_visible()
         assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
+        browser.close()
+
+
+def test_ast_e_diagnostico_sintatico_no_navegador(server):
+    from playwright.sync_api import sync_playwright
+    with sync_playwright() as p:
+        from os import environ
+        from shutil import which
+        executable=environ.get('CHROMIUM_EXECUTABLE') or which('chromium') or which('chromium-browser')
+        kwargs={'executable_path':executable} if executable else {}
+        browser=p.chromium.launch(headless=True,args=['--no-sandbox','--disable-dev-shm-usage'],**kwargs)
+        page=browser.new_page(viewport={'width':1440,'height':1024})
+        page.expose_function('callBackend', _call_backend)
+        page.set_content(_html_local(),wait_until='domcontentloaded')
+        page.evaluate("""() => {window.fetch=async (_, opts) => {
+            const response=await window.callBackend(opts.body);
+            return {status:response.status,json:async () => response.data};
+        };}""")
+        code='resultado = 10 + 5 * 2'
+        page.locator('#codigo').fill(code)
+        page.locator('#analisar').click()
+        page.locator('#syntax-section .ast-tree').wait_for(timeout=5000)
+        assert page.get_by_text('Análise sintática · Árvore AST').is_visible()
+        assert page.locator('#syntax-section .ast-branch').count()>2
+        locator=page.locator('#syntax-section .ast-locate').first
+        locator.click()
+        assert page.locator('#codigo').evaluate('(el) => el.selectionEnd > el.selectionStart')
+        page.locator('#codigo').fill('if nota >= 7\n    pass')
+        page.locator('#analisar').click()
+        page.get_by_text('Erros sintáticos — entenda a regra violada').wait_for(timeout=5000)
+        assert page.get_by_text('Regra gramatical:',exact=False).count()>=1
+        assert page.get_by_text('Como corrigir:',exact=False).count()>=1
+        assert page.locator('#syntax-section .ast-tree').count()==0
         browser.close()

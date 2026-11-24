@@ -2,6 +2,31 @@
 
 Repositório: https://github.com/rafaelapborges/analisador-educacional
 
+## Etapa 4 — Análise sintática e AST (2026)
+
+A Etapa 4 amplia o LexLab com **parser descendente recursivo**, verificação sintática,
+**árvore sintática abstrata (AST) hierárquica navegável**, mensagens localizadas,
+indicação da regra violada e sugestões didáticas, além de testes
+que preservam o scanner da Etapa 3. O subconjunto suporta atribuições, expressões,
+comparações e operadores lógicos, chamadas simples, `pass`, `if`/`elif`/`else` e
+`while`, com blocos de quatro espaços. O código nunca é executado.
+
+O `POST /api/analisar` mantém os campos anteriores e acrescenta `ast`,
+`erros_sintaticos` e `sintaxe`; retorna `422` diante de erro léxico/sintático.
+**Com erro léxico, o parser não é executado.**
+
+Consulte `docs/gramatica_etapa4.md`, `docs/diferencial_etapa4.md`,
+`docs/casos_de_teste_etapa4.md`,
+`docs/plano_de_avaliacao_etapa4.md`, `docs/registro_testes_etapa4.md` e
+`docs/fluxograma_etapa4.png`.
+
+Execute `docker compose up --build -d` e `python -m pytest tests -v`.
+Esta documentação descreve a atualização proposta; registrar resultados da Etapa 4
+somente após testar no ambiente local. A análise semântica e a tabela de símbolos
+permanecem **futuras (Etapa 5)**.
+
+## Histórico da Etapa 3
+
 ## O que já funciona
 
 O LexLab é um ambiente web para experimentar o reconhecimento de tokens em um subconjunto didático inspirado em Python. A **Etapa 3** acrescenta um scanner real, integrado ao backend e à interface. O projeto preserva o editor, os exemplos, a validação de entrada, a API Flask e o ambiente Docker das etapas anteriores.

@@ -46,6 +46,7 @@ function safeText(tag, className, value) {
   return element;
 }
 function resetResult() {
+  if (window.lexlabResetAST) window.lexlabResetAST();
   section.hidden = true;
   currentTokens = [];
   selectedToken = -1;
@@ -57,6 +58,7 @@ function resetResult() {
   footerStatus.textContent = 'Aguardando entrada';
 }
 function renderValidationError(message) {
+  if (window.lexlabResetAST) window.lexlabResetAST();
   section.hidden = true;
   resultBody.className = 'result-body error';
   resultBody.replaceChildren(safeText('div', 'result-mark', '!'),
@@ -67,21 +69,22 @@ function renderValidationError(message) {
 function renderSummary(data) {
   const errors = Array.isArray(data.erros) ? data.erros : [];
   const tokens = Array.isArray(data.tokens) ? data.tokens : [];
-  const failed = errors.length > 0;
+  const syntaxErrors = Array.isArray(data.erros_sintaticos) ? data.erros_sintaticos : [];
+  const failed = errors.length > 0 || syntaxErrors.length > 0;
   resultBody.className = 'result-body ' + (failed ? 'error' : 'success');
   resultBody.replaceChildren(safeText('div', 'result-mark', failed ? '!' : '✓'),
-    safeText('h3', '', failed ? 'Análise concluída com avisos' : 'Tokens identificados'),
+    safeText('h3', '', failed ? (syntaxErrors.length ? 'Erros sintáticos identificados' : 'Análise léxica com erros') : 'Tokens identificados'),
     safeText('p', '', data.mensagem));
   const grid = safeText('div', 'stat-grid', '');
-  for (const [value, label] of [[tokens.length, 'Tokens'], [errors.length, 'Erros léxicos']]) {
+  for (const [value, label] of [[tokens.length, 'Tokens'], [errors.length, 'Erros léxicos'], [syntaxErrors.length, 'Erros sintáticos']]) {
     const item = safeText('div', 'stat', '');
     item.append(safeText('strong', '', String(value)), safeText('span', '', label));
     grid.append(item);
   }
   resultBody.append(grid, safeText('p', 'scope-message',
-    'O scanner reconhece lexemas, mas não verifica se o programa está sintaticamente correto.'));
+    'O scanner reconhece os tokens; o parser valida o subconjunto gramatical e produz uma AST.'));
   setStatus(failed ? 'COM ERROS' : 'CONCLUÍDO', failed ? 'error' : 'success');
-  footerStatus.textContent = 'Análise léxica realizada no backend';
+  footerStatus.textContent = 'Análises léxica e sintática realizadas no backend';
 }
 
 function categoryClass(kind) {
@@ -192,6 +195,7 @@ analisar.addEventListener('click', async () => {
     if (Array.isArray(data.tokens) && Array.isArray(data.erros)) {
       renderSummary(data);
       renderAnalysis(data, code);
+      if (window.lexlabRenderAST) window.lexlabRenderAST(data);
     } else {
       renderValidationError(typeof data.mensagem === 'string' ? data.mensagem : 'Não foi possível analisar a entrada.');
     }

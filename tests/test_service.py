@@ -45,9 +45,9 @@ def test_caracteres_especiais_em_comentarios_e_strings():
     assert any(t['lexema'] == '"✓"' for t in dados['tokens'])
 
 
-def test_erro_sintatico_sem_erro_lexico_deve_passar():
+def test_erro_sintatico_sem_erro_lexico_deve_falhar_no_parser():
     dados, status = process_source({'codigo': 'if ( : :'})
-    assert status == 200 and dados['sucesso'] and dados['erros'] == []
+    assert status == 422 and not dados['sucesso'] and dados['erros'] == [] and dados['erros_sintaticos']
 
 
 def test_erro_lexico_retorna_422_e_tokens_parciais():

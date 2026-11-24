@@ -1,0 +1,32 @@
+digraph LexLab {
+  graph [rankdir=TB, bgcolor="#FFFFFF", pad="0.35", nodesep="0.25", ranksep="0.42", fontname="DejaVu Sans", label="LexLab | Fluxo do analisador educacional — Etapa 4", labelloc=t, fontsize=21, fontcolor="#15365D"];
+  node [fontname="DejaVu Sans", fontsize=11, shape=box, style="rounded,filled", color="#C7DDF2", fillcolor="#F1F7FD", fontcolor="#163757", margin="0.18,0.12"];
+  edge [color="#55789A", arrowsize=0.65, penwidth=1.25, fontname="DejaVu Sans", fontsize=9, fontcolor="#476987"];
+  entrada [label="1. Entrada / exemplos\nInterface web · Nginx", fillcolor="#DAECFF", color="#78B6F2"];
+  api [label="2. POST /api/analisar\nBackend Flask · JSON", fillcolor="#DAECFF", color="#78B6F2"];
+  valida [label="3. Validar entrada\nFormato, conteúdo e tamanho", fillcolor="#DAECFF", color="#78B6F2"];
+  valok [label="Entrada válida?",shape=diamond,style="filled",fillcolor="#F5FAFF",color="#99B9D5"];
+  scanner [label="4. Scanner (Etapa 3)\nTokens + erros léxicos", fillcolor="#DCEFE7",color="#85BDA4"];
+  lex [label="Há erros léxicos?",shape=diamond,style="filled",fillcolor="#F5FAFF",color="#99B9D5"];
+  parser [label="5. Parser descendente (Etapa 4)\nRegras gramaticais e blocos", fillcolor="#FFF0D7",color="#E0B66C"];
+  ast [label="6. AST (Etapa 4)\nÁrvore hierárquica + posição",fillcolor="#FFF0D7",color="#E0B66C"];
+  sin [label="Há erros sintáticos?",shape=diamond,style="filled",fillcolor="#F5FAFF",color="#99B9D5"];
+  result [label="7. Exibição didática\nTokens, AST e diagnósticos separados", fillcolor="#DAECFF",color="#78B6F2"];
+  erroentrada [label="Retornar 400 / 413 / 415\nMensagem de validação",fillcolor="#FFE9E9",color="#E9A1A1"];
+  errolex [label="Retornar 422\nErros léxicos · parser não executado",fillcolor="#FFE9E9",color="#E9A1A1"];
+  errosin [label="Retornar 422\nErros sintáticos + AST parcial",fillcolor="#FFE9E9",color="#E9A1A1"];
+  sem [label="Etapa 5 · futura\nAnálise semântica / símbolos",style="rounded,dashed,filled",fillcolor="#F4F4F4",fontcolor="#777777",color="#B4B4B4"];
+  entrada->api->valida->valok;
+  valok->erroentrada [label="Não",color="#D17E7E"];
+  valok->scanner [label="Sim"];
+  scanner->lex;
+  lex->errolex [label="Sim",color="#D17E7E"];
+  lex->parser [label="Não"];
+  parser->ast->sin;
+  sin->errosin [label="Sim",color="#D17E7E"];
+  sin->result [label="Não"];
+  erroentrada->result [constraint=false,style=dotted,color="#D17E7E"];
+  errolex->result [constraint=false,style=dotted,color="#D17E7E"];
+  errosin->result [constraint=false,style=dotted,color="#D17E7E"];
+  result->sem [label="Prevista, não incluída\nna Etapa 4",style=dashed,color="#999999"];
+}

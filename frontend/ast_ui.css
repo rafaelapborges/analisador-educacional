@@ -1,0 +1,12 @@
+.ast-section{margin:22px 0 30px;border:1px solid #dbe8f6;border-radius:17px;background:#fff;padding:24px;box-shadow:0 6px 20px #102d5010;color:#173353}
+.ast-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid #e5ecf4;padding-bottom:14px}
+.ast-heading h3{font-size:18px;letter-spacing:-.02em;margin:0;font-weight:750}.ast-status{font-size:11px;letter-spacing:.06em;font-weight:700;background:#e9f6f3;color:#0f806a;border-radius:6px;padding:7px 10px}
+.ast-muted{color:#64788e;font-size:13px;line-height:1.5;margin:14px 0}.ast-tree{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;background:#f7faff;border:1px solid #e5eef8;border-radius:12px;padding:17px;overflow-x:auto;max-height:560px;overflow-y:auto}
+.ast-branch{margin:6px 0 6px 11px;padding:4px 0 2px 11px;border-left:2px solid #cfe0f4}.ast-branch summary{cursor:pointer;font-weight:650;color:#2366a8;padding:3px 6px;border-radius:5px;list-style:revert}.ast-branch summary:hover,.ast-branch summary:focus-visible{background:#deebfc;outline:2px solid transparent}.ast-pos{display:inline-block;color:#8293aa;font-size:11px;margin:6px 0}.ast-leaf{margin:4px 0 4px 20px;line-height:1.6;color:#3f4d61}.ast-errors{background:#fff5f4;border:1px solid #ffcfcb;border-radius:10px;padding:15px;margin:12px 0;color:#ae312b}.ast-errors h4{margin:0 0 8px}.ast-errors p{font-size:13px;margin:8px 0}
+@media(max-width:650px){.ast-section{padding:15px}.ast-tree{font-size:11px;padding:10px}.ast-branch{margin-left:5px;padding-left:6px}}
+.ast-locate{font-size:11px;font-weight:650;border:1px solid #bad1ed;color:#23518b;background:#f3f8ff;padding:4px 8px;margin:3px 4px 4px 12px;border-radius:6px;cursor:pointer}
+.ast-locate:hover,.ast-locate:focus-visible{background:#dcecff;outline:2px solid #3785d0}
+.syntax-error-item{padding:10px 0;border-top:1px solid #f0d0ce}
+.syntax-error-item:first-of-type{border-top:0}
+.syntax-error-item strong{display:block;font-size:13px;line-height:1.5}
+.syntax-error-item p{margin:4px 0;color:#6e3633;line-height:1.5}
